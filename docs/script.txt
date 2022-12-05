@@ -1,0 +1,165 @@
+#------------------------------------------------------------
+#        Script MySQL.
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# Table: filiere
+#------------------------------------------------------------
+
+CREATE TABLE filiere(
+        id Int  Auto_increment  NOT NULL ,
+        filiere    Varchar (10) NOT NULL
+	,CONSTRAINT filiere_pk PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: categorie_document
+#------------------------------------------------------------
+
+CREATE TABLE categorie_document(
+        document_id Int  Auto_increment  NOT NULL ,
+        document    Varchar (10) NOT NULL
+	,CONSTRAINT categorie_document_PK PRIMARY KEY (document_id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: admin
+#------------------------------------------------------------
+
+CREATE TABLE admin(
+        id       Int  Auto_increment  NOT NULL ,
+        email    Varchar (100) NOT NULL ,
+        password Varchar (100) NOT NULL ,
+        nom      Varchar (100) NOT NULL ,
+        prenom   Varchar (100) NOT NULL ,
+        photo    Varchar (100) NOT NULL
+	,CONSTRAINT admin_PK PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: compte
+#------------------------------------------------------------
+
+CREATE TABLE compte(
+        id       Int  Auto_increment  NOT NULL ,
+        username Varchar (100) NOT NULL ,
+        password Varchar (100) NOT NULL
+	,CONSTRAINT compte_PK PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: region
+#------------------------------------------------------------
+
+CREATE TABLE region(
+        id     Int  Auto_increment  NOT NULL ,
+        region Varchar (10) NOT NULL
+	,CONSTRAINT region_PK PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: mention
+#------------------------------------------------------------
+
+CREATE TABLE mention(
+        id      Int  Auto_increment  NOT NULL ,
+        mention Varchar (10) NOT NULL
+	,CONSTRAINT mention_PK PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: type_bac
+#------------------------------------------------------------
+
+CREATE TABLE type_bac(
+        id       Int  Auto_increment  NOT NULL ,
+        type_bac Varchar (10) NOT NULL
+	,CONSTRAINT type_bac_PK PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: ville
+#------------------------------------------------------------
+
+CREATE TABLE ville(
+        id        Int  Auto_increment  NOT NULL ,
+        ville     Varchar (100) NOT NULL ,
+        id_region Int NOT NULL
+	,CONSTRAINT ville_PK PRIMARY KEY (id)
+
+	,CONSTRAINT ville_region_FK FOREIGN KEY (id_region) REFERENCES region(id) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: inscription
+#------------------------------------------------------------
+
+CREATE TABLE inscription(
+        inscription_numero       Int  Auto_increment  NOT NULL ,
+        inscription_date         Datetime NOT NULL ,
+        inscription_modification Datetime NOT NULL ,
+        nombre_modification      Int NOT NULL ,
+        nom                      Varchar (100) NOT NULL ,
+        prenom                   Varchar (100) NOT NULL ,
+        email                    Varchar (100) NOT NULL ,
+        photo                    Varchar (100) NOT NULL ,
+        cin                      Varchar (20) NOT NULL ,
+        cne                      Varchar (20) NOT NULL ,
+        adresse                  Varchar (20) NOT NULL ,
+        note_generale            Decimal (4,2) NOT NULL ,
+        note_regional            Decimal (4,2) NOT NULL ,
+        note_national            Decimal (4,2) NOT NULL ,
+        id                       Int NOT NULL ,
+        id_region                Int NOT NULL ,
+        id_mention               Int NOT NULL ,
+        id_type_bac              Int NOT NULL ,
+        id_ville                 Int NOT NULL,
+        id_choix1              Int NOT NULL,
+        id_choix2              Int NOT NULL
+
+	,CONSTRAINT inscription_PK PRIMARY KEY (inscription_numero)
+
+	,CONSTRAINT inscription_compte_FK FOREIGN KEY (id) REFERENCES compte(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT inscription_region0_FK FOREIGN KEY (id_region) REFERENCES region(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT inscription_mention1_FK FOREIGN KEY (id_mention) REFERENCES mention(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT inscription_type_bac2_FK FOREIGN KEY (id_type_bac) REFERENCES type_bac(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT inscription_ville3_FK FOREIGN KEY (id_ville) REFERENCES ville(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT inscription_filiere1_FK FOREIGN KEY (id_choix1) REFERENCES filiere(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT inscription_filiere2_FK FOREIGN KEY (id_choix2) REFERENCES filiere(id) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: document
+#------------------------------------------------------------
+
+CREATE TABLE document(
+        document_id        Int NOT NULL ,
+        inscription_numero Int NOT NULL ,
+        chemin             Varchar (10) NOT NULL
+	,CONSTRAINT document_PK PRIMARY KEY (document_id,inscription_numero)
+	,CONSTRAINT document_categorie_document_FK FOREIGN KEY (document_id) REFERENCES categorie_document(document_id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT document_inscription0_FK FOREIGN KEY (inscription_numero) REFERENCES inscription(inscription_numero)  ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+#------------------------------------------------------------
+# Table: facteurs
+#------------------------------------------------------------
+
+CREATE TABLE facteurs(
+        id_type_bac        Int NOT NULL ,
+        id_filiere 			Int NOT NULL ,
+        facteur             Varchar (10) NOT NULL
+	,CONSTRAINT document_PK PRIMARY KEY (id_type_bac,id_filiere)
+
+	,CONSTRAINT facteurs_type_bac_FK FOREIGN KEY (id_type_bac) REFERENCES type_bac(id) ON DELETE CASCADE ON UPDATE CASCADE
+	,CONSTRAINT facteurs_filiere_FK FOREIGN KEY (id_filiere) REFERENCES filiere(id)  ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB;
